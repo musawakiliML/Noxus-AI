@@ -4,7 +4,6 @@ from typing import List, Optional
 from bson import ObjectId
 from pydantic import BaseModel, EmailStr, Field
 
-
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):

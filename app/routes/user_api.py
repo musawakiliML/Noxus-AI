@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 from fastapi.responses import  Response, JSONResponse
 
 # User Modules
-from app.schemas import User
+from app.models.schemas import User
 from app.database import db
 #====================================================#
 

@@ -1,4 +1,5 @@
 ###### App Modules
+from io import BytesIO
 from fastapi import APIRouter, Path
 from fastapi import UploadFile, File, Form
 from typing import List
@@ -10,9 +11,12 @@ import os
 from bson import json_util
 import json
 
+#### image processing
+from PIL import Image
+
 ######## User Modules
 from app.database import db
-from app.schemas import AvatarModel, UpdateAvatarModel
+from app.models.schemas import AvatarModel, UpdateAvatarModel
 
 # Define Avatar route instance
 photo_router = APIRouter()
@@ -38,8 +42,8 @@ async def get_all_photos():
 
 @photo_router.post("/photos", status_code=201,response_description="Add new Photo")
 async def add_photo(files: list[UploadFile] = File(...), email: str = Form(default="example@example.com"), photo_class: str = Form(default="man/woman")):
-
     # Upload file to AWS S3
+    count = 0
     images_url = []
     images_filename = []
     s3 = boto3.resource("s3",
@@ -48,8 +52,17 @@ async def add_photo(files: list[UploadFile] = File(...), email: str = Form(defau
     
     bucket = s3.Bucket(S3_BUCKET_NAME)
     for file in files:
-        bucket.upload_fileobj(file.file, file.filename, ExtraArgs={"ACL": "public-read"})
-
+        image = Image.open(file.file)
+        new_image = image.resize((500,500))
+        image_io = BytesIO()
+        new_image.save(image_io, 'JPEG')
+        
+        count = count + 1
+        file.filename = f"{photo_class}_{count}.jpeg"
+        file_folder = f"{email}/{file.filename}"
+        image_io.seek(0)
+        bucket.upload_fileobj(image_io, file_folder, ExtraArgs={"ACL": "public-read"})
+        
         uploaded_file_url = f"https://{S3_BUCKET_NAME}.s3.amazonaws.com/{file.filename}"
         
         #images_url[file.filename] = uploaded_file_url

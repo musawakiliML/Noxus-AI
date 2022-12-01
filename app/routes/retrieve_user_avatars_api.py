@@ -5,7 +5,7 @@ from bson import ObjectId
 
 
 from app.database import db
-from app.schemas import UserAvatarModel
+from app.models.schemas import UserAvatarModel
 
 # ========================================================================================
 # 👇This Endpoint is responsible for fetching the avatars of a particular user-(ID)
