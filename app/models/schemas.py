@@ -23,7 +23,7 @@ class PyObjectId(ObjectId):
 # Define our Avatar Api Data model
 
 
-class AvatarModel(BaseModel):
+class PhotoModel(BaseModel):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     email: EmailStr = Field(...)
     photo_names: list = Field(...)
@@ -46,6 +46,11 @@ class AvatarModel(BaseModel):
                 #'is_deleted': False
             }
         }
+        
+        
+        
+class AvatarModel(BaseModel):
+    pass
 
 
 class UserAvatarModel(BaseModel):

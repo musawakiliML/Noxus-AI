@@ -16,7 +16,7 @@ from PIL import Image
 
 ######## User Modules
 from app.database import db
-from app.models.schemas import AvatarModel, UpdateAvatarModel
+from app.models.schemas import PhotoModel, UpdateAvatarModel
 
 # Define Avatar route instance
 photo_router = APIRouter()
@@ -24,7 +24,7 @@ photo_router = APIRouter()
 S3_BUCKET_NAME = "hngtest"
 
 
-@photo_router.get("/photos", response_model= List[AvatarModel])
+@photo_router.get("/photos", response_model= List[PhotoModel])
 async def get_all_photos():
     all_photos = await db['avatar_pictures'].find().to_list(1000)
     #all_photos = json.loads(json_util.dumps(all_photos))
@@ -32,7 +32,7 @@ async def get_all_photos():
     #print(all_photos)
     for photo in all_photos:
         avatar_model.append(
-            AvatarModel(
+            PhotoModel(
                 email = photo['email'], photo_names=photo['photo_name'], photo_urls=photo['photo_urls'], photo_class=photo['photo_class']
             )
         )
