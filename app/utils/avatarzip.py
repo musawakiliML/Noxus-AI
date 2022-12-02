@@ -3,6 +3,7 @@ import boto3
 import json
 from io import BytesIO
 from zipfile import ZipFile
+from botocore.exceptions import ClientError   
 
 s3_resource = boto3.resource("s3",
                         aws_access_key_id=os.environ["ACCESS_KEY"],
@@ -34,6 +35,14 @@ def unzip_avatar(email):
                     return e
         else:
             return {"message": f"{file.key} is not a zip file"}
-        
-def get_avatars():
-    pass
+       
+def get_avatars(email, bucket_name): 
+    avatars = []
+    client = boto3.client('s3')
+
+    bucket = client.list_objects(Bucket=bucket_name, Marker=f"{email}/generated")
+    for content in bucket["Contents"]:
+        key = content["Key"]
+        avatars.append(key)
+    
+    return {"Avatars": avatars}

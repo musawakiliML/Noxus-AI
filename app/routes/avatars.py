@@ -5,7 +5,7 @@ from fastapi.exceptions import HTTPException
 import os
 import boto3
 import json
-from app.utils.avatarzip import unzip_avatar
+from app.utils.avatarzip import unzip_avatar, get_avatars
 from app.utils.sendmail import sendmail
 
 avatar_router = APIRouter()
@@ -32,6 +32,9 @@ async def upload(file: UploadFile = File(...), email: str = Form(default="exampl
     
     return {"Message":'Successfully Uploaded Zip and Saved Content'}
 
-@avatar_router.get("/avatar")
-async def get_avatar():
-    pass
+
+@avatar_router.get("/avatar/{email}")
+async def get_avatar(email):
+    list_of_avatars = get_avatars(id, "hngtest")
+    
+    return {"data": list_of_avatars}
